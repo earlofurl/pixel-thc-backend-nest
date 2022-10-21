@@ -12,7 +12,42 @@ export class PackagesService {
   }
 
   findAll() {
-    // `This action returns all packages`;
+    // `This action returns all packages with associated data`;
+    return this.prisma.package.findMany({
+      include: {
+        tag: true,
+        uom: true,
+        item: {
+          include: {
+            itemType: {
+              include: {
+                uomDefault: {},
+              },
+            },
+            strain: true,
+          },
+        },
+        labTests: {
+          include: {
+            labTest: {
+              select: {
+                thcTotalPercent: true,
+                cbdPercent: true,
+                terpenePercent: true,
+                overallPassed: true,
+                totalCannabinoidsPercent: true,
+                batchCode: true,
+                testIdCode: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  findAllFlat() {
+    // `This action returns all packages flattened`;
     return this.prisma.package.findMany();
   }
 

@@ -26,6 +26,11 @@ export class PackagesController {
     return this.packagesService.findAll();
   }
 
+  @Get('flat')
+  findAllFlat(): Promise<Package[]> {
+    return this.packagesService.findAllFlat();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.packagesService.findOne(+id);
