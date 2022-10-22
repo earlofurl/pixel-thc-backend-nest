@@ -7,9 +7,9 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { Package } from '@prisma/client';
+import type { Package } from '@prisma/client';
 import { PackagesService } from './packages.service';
-import { CreatePackagesDto } from './dto/create-packages.dto';
+import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackagesDto } from './dto/update-packages.dto';
 
 @Controller('packages')
@@ -17,7 +17,7 @@ export class PackagesController {
   constructor(private readonly packagesService: PackagesService) {}
 
   @Post()
-  create(@Body() createPackageDto: CreatePackagesDto) {
+  create(@Body() createPackageDto: CreatePackageDto) {
     return this.packagesService.create(createPackageDto);
   }
 

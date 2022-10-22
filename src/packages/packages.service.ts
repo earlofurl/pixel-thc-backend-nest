@@ -1,13 +1,36 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePackagesDto } from './dto/create-packages.dto';
+import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackagesDto } from './dto/update-packages.dto';
 import { PrismaService } from 'nestjs-prisma';
+
+import type {
+  Package,
+  LabTestsOnPackages,
+  Item,
+  ItemType,
+  PackageTag,
+  Strain,
+  Uom,
+} from '@prisma/client';
+
+export type PackageWithNestedData = Package & {
+  tag: PackageTag;
+  item: ItemWithNesting;
+  labTests: LabTestsOnPackages[];
+  uom: Uom;
+  sourcePackages: PackageWithNestedData[];
+};
+
+export type ItemWithNesting = Item & {
+  itemType: ItemType;
+  strain: Strain;
+};
 
 @Injectable()
 export class PackagesService {
   constructor(private prisma: PrismaService) {}
 
-  create(createPackagesDto: CreatePackagesDto) {
+  create(createPackageDto: CreatePackageDto) {
     return 'This action adds a new package';
   }
 
