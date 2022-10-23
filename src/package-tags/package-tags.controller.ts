@@ -21,9 +21,14 @@ export class PackageTagsController {
     return this.packageTagsService.create(createPackageTagDto);
   }
 
-  @Get()
+  @Get('/all')
   findAll(): Promise<PackageTag[]> {
     return this.packageTagsService.findAll();
+  }
+
+  @Get(':assigned/:quantity')
+  findMany(@Param() params): Promise<PackageTag[]> {
+    return this.packageTagsService.findMany(params.assigned, params.quantity);
   }
 
   @Get(':id')

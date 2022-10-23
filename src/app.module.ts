@@ -7,9 +7,10 @@ import { OrdersModule } from './orders/orders.module';
 import { PackageTagsModule } from './package-tags/package-tags.module';
 import { ItemsModule } from './items/items.module';
 import { UomModule } from './uom/uom.module';
+import { LabTestsModule } from './lab-tests/lab-tests.module';
 
 @Module({
-  imports: [PackagesModule, OrdersModule, PackageTagsModule, ItemsModule, UomModule],
+  imports: [PackagesModule, OrdersModule, PackageTagsModule, ItemsModule, UomModule, LabTestsModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
