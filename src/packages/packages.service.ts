@@ -30,8 +30,62 @@ export type ItemWithNesting = Item & {
 export class PackagesService {
   constructor(private prisma: PrismaService) {}
 
-  create(createPackageDto: CreatePackageDto) {
-    return 'This action adds a new package';
+  async create(createPackageDto: CreatePackageDto) {
+    // 'This action adds a new package';
+    // Transaction to ensure that the package is created and parent package is updated.
+    const createPackage = this.prisma.package.create({
+      data: {
+        quantity: createPackageDto.quantity,
+        uom: {
+          connect: {
+            id: createPackageDto.uomId,
+          },
+        },
+        tag: {
+          connect: {
+            id: createPackageDto.tagId,
+          },
+        },
+        item: {
+          connect: {
+            id: createPackageDto.itemId,
+          },
+        },
+        sourcePackages: {
+          connect: {
+            id: createPackageDto.sourcePackageId,
+          },
+        },
+        labTests: {
+          create: [
+            {
+              labTestId: createPackageDto.inheritedLabTestIds,
+              assignedBy: 'packageCreation',
+            },
+          ],
+        },
+      },
+    });
+
+    const updateSourcePackage = this.prisma.package.update({
+      where: { id: createPackageDto.sourcePackageId },
+      data: {
+        quantity: createPackageDto.newParentQuantity,
+      },
+    });
+
+    const updateTagStatus = this.prisma.packageTag.update({
+      where: { id: createPackageDto.tagId },
+      data: {
+        isAssigned: true,
+      },
+    });
+
+    await this.prisma.$transaction([
+      createPackage,
+      updateSourcePackage,
+      updateTagStatus,
+    ]);
   }
 
   findAll() {
