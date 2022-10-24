@@ -135,7 +135,7 @@ model PackageTag {
   id              String    @id @default(uuid())
   createdAt       DateTime? @default(now())
   updatedAt       DateTime? @updatedAt
-  tagNumber       String
+  tagNumber       String    @unique
   isAssigned      Boolean?  @default(false)
   isProvisional   Boolean?  @default(true)
   isActive        Boolean?  @default(false)

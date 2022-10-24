@@ -12,6 +12,7 @@ import type {
   Strain,
   Uom,
 } from '@prisma/client';
+import { AssignTagDto } from './dto/assign-tag.dto';
 
 export type PackageWithNestedData = Package & {
   tag: PackageTag;
@@ -41,6 +42,7 @@ export class PackagesService {
       quantity,
       uomId,
       newParentQuantity,
+      notes,
     } = createPackageDto;
 
     const createPackage = this.prisma.package.create({
@@ -74,17 +76,19 @@ export class PackagesService {
             },
           ],
         },
+        notes,
       },
     });
+
     const updateSourcePackage = this.prisma.package.update({
-      where: { id: createPackageDto.sourcePackageId },
+      where: { id: sourcePackageId },
       data: {
-        quantity: createPackageDto.newParentQuantity,
+        quantity: newParentQuantity,
       },
     });
 
     const updateTagStatus = this.prisma.packageTag.update({
-      where: { id: createPackageDto.tagId },
+      where: { id: tagId },
       data: {
         isAssigned: true,
       },
@@ -95,6 +99,30 @@ export class PackagesService {
       updateSourcePackage,
       updateTagStatus,
     ]);
+  }
+
+  async assignTag(assignTagDto: AssignTagDto) {
+    const { tagId, packageId } = assignTagDto;
+
+    const updateTagStatus = this.prisma.packageTag.update({
+      where: { id: tagId },
+      data: {
+        isAssigned: true,
+      },
+    });
+
+    const updateTagOnPackage = this.prisma.package.update({
+      where: { id: packageId },
+      data: {
+        tag: {
+          connect: {
+            id: tagId,
+          },
+        },
+      },
+    });
+
+    await this.prisma.$transaction([updateTagStatus, updateTagOnPackage]);
   }
 
   findAll() {
@@ -128,17 +156,29 @@ export class PackagesService {
             },
           },
         },
+        sourcePackages: {
+          include: {
+            tag: true,
+          },
+        },
       },
     });
   }
 
-  findAllFlat() {
-    // `This action returns all packages flattened`;
-    return this.prisma.package.findMany();
-  }
+  async findOne(tagNumber: string) {
+    // `This action returns the package with specified tag number`;
+    const tag = await this.prisma.packageTag.findUnique({
+      where: {
+        tagNumber,
+      },
+    });
+    const packageMatch = await this.prisma.package.findUnique({
+      where: {
+        tagId: tag.id,
+      },
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} package`;
+    return packageMatch;
   }
 
   update(id: number, updatePackagesDto: UpdatePackagesDto) {

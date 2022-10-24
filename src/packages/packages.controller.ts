@@ -11,6 +11,7 @@ import type { Package } from '@prisma/client';
 import { PackagesService } from './packages.service';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackagesDto } from './dto/update-packages.dto';
+import { AssignTagDto } from './dto/assign-tag.dto';
 
 @Controller('packages')
 export class PackagesController {
@@ -21,19 +22,19 @@ export class PackagesController {
     return this.packagesService.create(createPackageDto);
   }
 
+  @Post('/assign-tag')
+  assignTag(@Body() assignTagDto: AssignTagDto) {
+    return this.packagesService.assignTag(assignTagDto);
+  }
+
   @Get()
   findAll(): Promise<Package[]> {
     return this.packagesService.findAll();
   }
 
-  @Get('flat')
-  findAllFlat(): Promise<Package[]> {
-    return this.packagesService.findAllFlat();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.packagesService.findOne(+id);
+  @Get(':tagNumber')
+  findOne(@Param('tagNumber') tagNumber: string) {
+    return this.packagesService.findOne(tagNumber);
   }
 
   @Patch(':id')
