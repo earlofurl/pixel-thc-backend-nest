@@ -31,42 +31,51 @@ export class PackagesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createPackageDto: CreatePackageDto) {
-    // 'This action adds a new package';
-    // Transaction to ensure that the package is created and parent package is updated.
+    console.log('createPackageDto', createPackageDto);
+
+    const {
+      tagId,
+      sourcePackageId,
+      inheritedLabTestIds,
+      itemId,
+      quantity,
+      uomId,
+      newParentQuantity,
+    } = createPackageDto;
+
     const createPackage = this.prisma.package.create({
       data: {
-        quantity: createPackageDto.quantity,
+        quantity: quantity,
         uom: {
           connect: {
-            id: createPackageDto.uomId,
+            id: uomId,
           },
         },
         tag: {
           connect: {
-            id: createPackageDto.tagId,
+            id: tagId,
           },
         },
         item: {
           connect: {
-            id: createPackageDto.itemId,
+            id: itemId,
           },
         },
         sourcePackages: {
           connect: {
-            id: createPackageDto.sourcePackageId,
+            id: sourcePackageId,
           },
         },
         labTests: {
           create: [
             {
-              labTestId: createPackageDto.inheritedLabTestIds,
+              labTestId: inheritedLabTestIds,
               assignedBy: 'packageCreation',
             },
           ],
         },
       },
     });
-
     const updateSourcePackage = this.prisma.package.update({
       where: { id: createPackageDto.sourcePackageId },
       data: {
