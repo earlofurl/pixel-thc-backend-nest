@@ -34,6 +34,7 @@ import { ItemTypesModule } from './item-types/item-types.module';
           socket: {
             host: process.env.REDIS_HOST,
             port: parseInt(process.env.REDIS_PORT),
+            passphrase: process.env.REDIS_PASSWORD,
           },
         }),
     }),

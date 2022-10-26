@@ -21,6 +21,7 @@ async function bootstrap() {
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
   if (process.env.NODE_ENV === 'development') {
+    app.enableCors();
     await app.listen(3000, '0.0.0.0', () =>
       console.log(`DEV Listening on port: 3000`),
     );
