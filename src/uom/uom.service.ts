@@ -1,18 +1,22 @@
 import type { Uom } from '@prisma/client';
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { CreateUomDto } from './dto/create-uom.dto';
 import { UpdateUomDto } from './dto/update-uom.dto';
 import { PrismaService } from 'nestjs-prisma';
 
 @Injectable()
 export class UomService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheService: Cache,
+  ) {}
 
   create(createUomDto: CreateUomDto) {
     return 'This action adds a new uom';
   }
 
-  findAll() {
+  async findAll(): Promise<Uom[]> {
     // `This action returns all uom`;
     return this.prisma.uom.findMany();
   }

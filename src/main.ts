@@ -10,7 +10,6 @@ async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
-    { cors: true },
   );
 
   // enable shutdown hook
@@ -22,8 +21,11 @@ async function bootstrap() {
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
   if (process.env.NODE_ENV === 'development') {
-    await app.listen(3000, () => console.log(`DEV Listening on port: 3000`));
+    await app.listen(3000, '0.0.0.0', () =>
+      console.log(`DEV Listening on port: 3000`),
+    );
   } else {
+    app.enableCors();
     await app.listen(3420, '0.0.0.0', () =>
       console.log(`PROD Listening on port: 3420`),
     );

@@ -6,6 +6,9 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  CacheInterceptor,
+  CacheTTL,
 } from '@nestjs/common';
 import type { Uom } from '@prisma/client';
 import { UomService } from './uom.service';
@@ -21,6 +24,8 @@ export class UomController {
     return this.uomService.create(createUomDto);
   }
 
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   @Get()
   findAll(): Promise<Uom[]> {
     return this.uomService.findAll();

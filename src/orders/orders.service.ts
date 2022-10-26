@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PrismaService } from 'nestjs-prisma';
 
 @Injectable()
 export class OrdersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheService: Cache,
+  ) {}
 
   create(createOrderDto: CreateOrderDto) {
     return 'This action adds a new order';
@@ -50,8 +54,22 @@ export class OrdersService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async findOne(id: string) {
+    // `This action returns a #${id} order`;
+    const cachedData = await this.cacheService.get<{ customerName: string }>(
+      id,
+    );
+    if (cachedData) {
+      console.log(`Getting data from cache!`);
+      return `${cachedData.customerName}`;
+    }
+
+    // if not, call API and set the cache:
+    const data = await this.prisma.order.findUnique({
+      where: { id: id },
+    });
+    await this.cacheService.set(id.toString(), data);
+    return `${data.customerName}`;
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {

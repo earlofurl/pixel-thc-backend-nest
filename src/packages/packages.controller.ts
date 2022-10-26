@@ -1,4 +1,5 @@
 import {
+  CacheInterceptor,
   Controller,
   Get,
   Post,
@@ -6,6 +7,8 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  CacheTTL,
 } from '@nestjs/common';
 import type { Package } from '@prisma/client';
 import { PackagesService } from './packages.service';
@@ -27,6 +30,8 @@ export class PackagesController {
     return this.packagesService.assignTag(assignTagDto);
   }
 
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   @Get()
   findAll(): Promise<Package[]> {
     return this.packagesService.findAll();
