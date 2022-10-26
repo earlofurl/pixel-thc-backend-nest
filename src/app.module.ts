@@ -1,5 +1,5 @@
 import { CacheModule, Module } from '@nestjs/common';
-import * as redisStore from 'cache-manager-redis-store';
+import { redisStore } from 'cache-manager-redis-store';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -26,9 +26,16 @@ import { ItemTypesModule } from './item-types/item-types.module';
     ItemTypesModule,
     CacheModule.register({
       isGlobal: true,
-      store: redisStore,
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      store: async () =>
+        await redisStore({
+          // Store-specific configuration:
+          socket: {
+            host: process.env.REDIS_HOST,
+            port: parseInt(process.env.REDIS_PORT),
+          },
+        }),
     }),
   ],
   controllers: [AppController],
