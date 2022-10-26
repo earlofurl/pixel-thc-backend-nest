@@ -13,6 +13,7 @@ async function bootstrap() {
   );
 
   app.enableCors();
+  app.setGlobalPrefix('api/v1');
 
   // enable shutdown hook
   const prismaService: PrismaService = app.get(PrismaService);
