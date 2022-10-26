@@ -9,8 +9,10 @@ declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter(),
+    new FastifyAdapter({ logger: true }),
   );
+
+  app.enableCors();
 
   // enable shutdown hook
   const prismaService: PrismaService = app.get(PrismaService);
@@ -20,17 +22,9 @@ async function bootstrap() {
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
-  if (process.env.NODE_ENV === 'development') {
-    app.enableCors();
-    await app.listen(3000, '0.0.0.0', () =>
-      console.log(`DEV Listening on port: 3000`),
-    );
-  } else {
-    app.enableCors();
-    await app.listen(3420, '0.0.0.0', () =>
-      console.log(`PROD Listening on port: 3420`),
-    );
-  }
+  await app.listen(3420, '::');
+
+  console.log(`Application is running on: ${await app.getUrl()}`);
 
   if (module.hot) {
     module.hot.accept();

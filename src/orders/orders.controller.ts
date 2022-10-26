@@ -23,11 +23,17 @@ export class OrdersController {
 
   @Get()
   findAll() {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('GET findAll orders');
+    }
     return this.ordersService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('GET findOne id order');
+    }
     return this.ordersService.findOne(id);
   }
 

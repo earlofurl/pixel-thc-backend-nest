@@ -10,8 +10,10 @@ services:
           - .:/usr/src/app
     restart: always
     command: npm run start:dev
+    expose:
+      - 3420
     ports:
-      - 3000:3000
+      - 3420:3420
     depends_on:
       - postgres
       - redis

@@ -28,11 +28,17 @@ export class UomController {
   @CacheTTL(30)
   @Get()
   findAll(): Promise<Uom[]> {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('GET findAll UoMs');
+    }
     return this.uomService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('GET findOne id UoM');
+    }
     return this.uomService.findOne(+id);
   }
 

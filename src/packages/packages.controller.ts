@@ -34,11 +34,17 @@ export class PackagesController {
   @CacheTTL(30)
   @Get()
   findAll(): Promise<Package[]> {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('GET findAll packages');
+    }
     return this.packagesService.findAll();
   }
 
   @Get(':tagNumber')
   findOne(@Param('tagNumber') tagNumber: string) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('GET findOne tagNumber package');
+    }
     return this.packagesService.findOne(tagNumber);
   }
 
