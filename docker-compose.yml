@@ -1,11 +1,15 @@
 version: '3.8'
 services:
-  nest-api:
+  api:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nest-api
+      target: development
+    container_name: nest-api-dev
+    volumes:
+          - .:/usr/src/app
     restart: always
+    command: npm run start:dev
     ports:
       - 3000:3000
     depends_on:

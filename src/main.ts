@@ -21,7 +21,13 @@ async function bootstrap() {
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
-  await app.listen(3000);
+  if (process.env.NODE_ENV === 'development') {
+    await app.listen(3000, () => console.log(`DEV Listening on port: 3000`));
+  } else {
+    await app.listen(3420, '0.0.0.0', () =>
+      console.log(`PROD Listening on port: 3420`),
+    );
+  }
 
   if (module.hot) {
     module.hot.accept();
