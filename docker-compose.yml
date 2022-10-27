@@ -7,7 +7,7 @@ services:
       target: development
     container_name: nest-api-dev
     volumes:
-          - .:/usr/src/app
+      - .:/usr/src/app
     restart: always
     command: npm run start:dev
     expose:
@@ -35,6 +35,8 @@ services:
   redis:
     container_name: cache
     image: redis
+    expose:
+      - 6379
     ports:
       - 6379:6379
     volumes:
