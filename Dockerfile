@@ -11,6 +11,7 @@ WORKDIR /usr/src/app
 # A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
 # Copying this first prevents re-running npm install on every code change.
 COPY --chown=node:node package*.json ./
+COPY --chown=node:node prisma ./prisma
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
 RUN npm ci
@@ -21,7 +22,7 @@ ENV NODE_ENV development
 # Bundle app source
 COPY --chown=node:node . .
 
-# Generate Prisma database client code
+# Generate Prisma prisma client code
 RUN npm run prisma:generate
 
 # Use the node user from the image (instead of the root user)
@@ -36,6 +37,7 @@ FROM node:18-alpine AS build
 WORKDIR /usr/src/app
 
 COPY --chown=node:node package*.json ./
+COPY --chown=node:node prisma ./prisma
 
 # In order to run `npm run build` we need access to the Nest CLI which is a dev dependency. In the previous development stage we ran `npm ci` which installed all dependencies, so we can copy over the node_modules directory from the development image
 COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
@@ -63,6 +65,7 @@ FROM node:18-alpine AS production
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/package.json ./
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+COPY --chown=node:node --from=build /usr/src/app/prisma ./prisma
 
 EXPOSE 3420
 # Start the server using the production build

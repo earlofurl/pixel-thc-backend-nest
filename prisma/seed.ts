@@ -765,7 +765,7 @@ async function seed() {
     });
   });
 
-  // use prisma to insert the items in the itemList into the database
+  // use prisma to insert the items in the itemList into the prisma
   const createAllItems = await prisma.item.createMany({
     data: itemList,
   });
