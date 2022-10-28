@@ -12,22 +12,22 @@ async function bootstrap() {
     new FastifyAdapter({ logger: true }),
   );
 
-  const CORS_OPTIONS = {
-    origin: ['*'], // '*' or '0.0.0.0:3069' or other depending on server
-    allowedHeaders: [
-      'Access-Control-Allow-Origin',
-      'Origin',
-      'X-Requested-With',
-      'Accept',
-      'Content-Type',
-      'Authorization',
-    ],
-    exposedHeaders: 'Authorization',
-    credentials: true,
-    methods: ['GET', 'PUT', 'OPTIONS', 'POST', 'DELETE'],
-  };
+  // const CORS_OPTIONS = {
+  //   origin: ['0.0.0.0:3069'], // '*' or '0.0.0.0:3069' or other depending on server
+  //   allowedHeaders: [
+  //     'Access-Control-Allow-Origin',
+  //     'Origin',
+  //     'X-Requested-With',
+  //     'Accept',
+  //     'Content-Type',
+  //     'Authorization',
+  //   ],
+  //   exposedHeaders: 'Authorization',
+  //   credentials: true,
+  //   methods: ['GET', 'PUT', 'OPTIONS', 'POST', 'DELETE'],
+  // };
 
-  app.enableCors(CORS_OPTIONS);
+  app.enableCors({ origin: '*' });
   app.setGlobalPrefix('api/v1');
 
   // enable shutdown hook
