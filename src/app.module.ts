@@ -25,7 +25,8 @@ import { LabTestsModule } from './lab-tests/lab-tests.module';
 import { StrainsModule } from './strains/strains.module';
 import { ItemTypesModule } from './item-types/item-types.module';
 import { AuthModule } from './auth/auth.module';
-import { REDIS, RedisModule } from './redis/redis.module';
+import { RedisModule } from './redis/redis.module';
+import { REDIS } from './redis/redis.constants';
 import * as redisNode from 'redis';
 import { RedisClientType } from 'redis';
 

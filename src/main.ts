@@ -26,7 +26,9 @@ async function bootstrap() {
   // };
 
   app.enableCors({ origin: '*' });
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix('api/v1', {
+    exclude: ['auth/register', 'auth/login', 'auth', 'protected', 'admin'],
+  });
 
   // enable shutdown hook
   const prismaService: PrismaService = app.get(PrismaService);

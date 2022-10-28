@@ -9,7 +9,7 @@ import { REDIS } from './redis.constants';
       provide: REDIS,
       useFactory: async () => {
         const client = Redis.createClient({
-          url: 'redis://username:password@your.redis.url',
+          url: process.env.REDIS_URL,
           legacyMode: true,
         });
         await client.connect();
