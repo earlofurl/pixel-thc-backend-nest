@@ -1,5 +1,17 @@
-import { CacheModule, Module } from '@nestjs/common';
+import {
+  Inject,
+  Logger,
+  MiddlewareConsumer,
+  NestModule,
+  CacheModule,
+  Module,
+} from '@nestjs/common';
+// import type { RedisClientType } from 'redis';
+import * as RedisStore from 'connect-redis';
+import * as session from 'express-session';
+import * as passport from 'passport';
 import { redisStore } from 'cache-manager-redis-store';
+
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -12,6 +24,22 @@ import { UomModule } from './uom/uom.module';
 import { LabTestsModule } from './lab-tests/lab-tests.module';
 import { StrainsModule } from './strains/strains.module';
 import { ItemTypesModule } from './item-types/item-types.module';
+import { AuthModule } from './auth/auth.module';
+import { REDIS, RedisModule } from './redis/redis.module';
+import * as redisNode from 'redis';
+import { RedisClientType } from 'redis';
+
+// type RedisClient = RedisClientType<
+//   redisNode.RedisModules,
+//   redisNode.RedisFunctions,
+//   redisNode.RedisScripts
+// >;
+const redisClient = redisNode.createClient({
+  legacyMode: true,
+}) as RedisClientType<any, any, any>;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+type RedisClient = ReturnType<typeof redisClient>;
 
 @Module({
   imports: [
@@ -38,8 +66,34 @@ import { ItemTypesModule } from './item-types/item-types.module';
           },
         }),
     }),
+    AuthModule,
+    RedisModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService, Logger],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  constructor(@Inject(REDIS) private readonly redis: RedisClient) {}
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        session({
+          store: new (RedisStore(session))({
+            client: this.redis,
+            logErrors: true,
+          }),
+          saveUninitialized: false,
+          secret: 'sup3rs3cr3td4nk4208008zz222257921',
+          resave: false,
+          cookie: {
+            sameSite: true,
+            httpOnly: false,
+            maxAge: 60000,
+          },
+        }),
+        passport.initialize(),
+        passport.session(),
+      )
+      .forRoutes('*');
+  }
+}

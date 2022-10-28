@@ -1,16 +1,14 @@
-import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { PrismaClientExceptionFilter, PrismaService } from 'nestjs-prisma';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
+import { Logger } from '@nestjs/common';
 
 declare const module: any;
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    new FastifyAdapter({ logger: true }),
-  );
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const logger = app.get(Logger);
 
   // const CORS_OPTIONS = {
   //   origin: ['0.0.0.0:3069'], // '*' or '0.0.0.0:3069' or other depending on server
@@ -40,7 +38,7 @@ async function bootstrap() {
 
   await app.listen(3420, '::');
 
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  logger.log(`Application listening at ${await app.getUrl()}`);
 
   if (module.hot) {
     module.hot.accept();

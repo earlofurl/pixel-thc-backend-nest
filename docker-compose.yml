@@ -42,6 +42,12 @@ services:
     volumes:
       - redis:/data
 
+  rcli:
+      image: redis:latest
+      links:
+        - redis
+      command: redis-cli -h redis
+
 volumes:
   redis:
     driver: local

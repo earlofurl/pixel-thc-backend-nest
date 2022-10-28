@@ -47,11 +47,27 @@ enum OrderStatus {
   Finished
 }
 
+enum Role {
+  ADMIN
+  CUSTOMER
+  GUEST
+  STANDARD
+  SUPERADMIN
+  MANAGER
+}
+
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String    @id @unique @default(uuid())
+  provider_id     String    @unique
+  hashed_password String?
+  username        String    @unique
+  email           String    @unique
+  first_name      String?
+  last_name       String?
+  phone           String?
+  role            Role      @default(STANDARD)
+
+  @@map("user")
 }
 
 model ProductCategory {
