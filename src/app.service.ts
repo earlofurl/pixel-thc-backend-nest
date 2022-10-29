@@ -11,10 +11,10 @@ export class AppService {
   }
 
   getPrivateMessage(): string {
-    return 'You can only see this if you are authenticated';
+    return `Success! You're seeing this because you are authenticated`;
   }
 
   getAdminMessage(): string {
-    return 'You can only see this if you are an admin';
+    return `Success! You're seeing this because you are an admin`;
   }
 }

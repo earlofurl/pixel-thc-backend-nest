@@ -2,11 +2,12 @@ import type { Role } from '@prisma/client';
 
 export interface User {
   id: string;
+  providerId?: string;
   username: string;
-  first_name?: string;
-  last_name?: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
-  password: string;
+  password?: string;
   phone?: string;
   role: Role;
 }

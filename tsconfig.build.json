@@ -6,5 +6,11 @@
     "dist",
     "**/*spec.ts",
     "prisma"
-  ]
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "target": "ES2021",
+    "module": "CommonJS"
+  }
 }

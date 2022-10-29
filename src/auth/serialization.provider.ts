@@ -18,7 +18,7 @@ export class AuthSerializer extends PassportSerializer {
 
   deserializeUser(
     payload: { id: string; role: string },
-    done: (err: Error, user: Omit<User, 'password'>) => void,
+    done: (err: Error, user: Promise<Omit<User, 'password'>>) => void,
   ) {
     const user = this.authService.findById(payload.id);
     done(null, user);

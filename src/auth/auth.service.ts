@@ -1,3 +1,4 @@
+import type { User as PrismaUser } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import {
   BadRequestException,
@@ -17,66 +18,87 @@ import { User } from './models/user.interface';
 export class AuthService {
   constructor(private prisma: PrismaService) {}
 
-  private users: User[] = [
-    {
-      id: uuidv4(),
-      username: 'testDude420',
-      first_name: 'Joe',
-      last_name: 'Foo',
-      email: 'joefoo@test.com',
-      // Passw0rd!
-      password: '$2b$12$s50omJrK/N3yCM6ynZYmNeen9WERDIVTncywePc75.Ul8.9PUk0LK',
-      role: 'ADMIN',
-    },
-    {
-      id: uuidv4(),
-      username: 'testGrl69',
-      first_name: 'Jen',
-      last_name: 'Bar',
-      email: 'jenbar@test.com',
-      // P4ssword!
-      password: '$2b$12$FHUV7sHexgNoBbP8HsD4Su/CeiWbuX/JCo8l2nlY1yCo2LcR3SjmC',
-      role: 'STANDARD',
-    },
-  ];
+  // private users: User[] = [
+  //   {
+  //     id: uuidv4(),
+  //     username: 'testDude420',
+  //     firstName: 'Joe',
+  //     lastName: 'Foo',
+  //     email: 'joefoo@test.com',
+  //     // Passw0rd!
+  //     password: '$2b$12$s50omJrK/N3yCM6ynZYmNeen9WERDIVTncywePc75.Ul8.9PUk0LK',
+  //     role: 'ADMIN',
+  //   },
+  //   {
+  //     id: uuidv4(),
+  //     username: 'testGrl69',
+  //     firstName: 'Jen',
+  //     lastName: 'Bar',
+  //     email: 'jenbar@test.com',
+  //     // P4ssword!
+  //     password: '$2b$12$FHUV7sHexgNoBbP8HsD4Su/CeiWbuX/JCo8l2nlY1yCo2LcR3SjmC',
+  //     role: 'STANDARD',
+  //   },
+  // ];
 
-  async validateUser(user: LoginUserDto) {
-    const foundUser = this.users.find((u) => u.email === user.email);
+  async validateUser(
+    user: LoginUserDto,
+  ): Promise<Omit<User, 'password'> | null> {
+    // Check for existing user with email
+    const foundUser = await this.prisma.user.findUnique({
+      where: {
+        email: user.email,
+      },
+    });
+
+    // If user not provided or password doesn't match, throw UnauthorizedException
     if (!user || !(await compare(user.password, foundUser.password))) {
       throw new UnauthorizedException('Incorrect username or password');
     }
+
+    // If user is found, return user without password
     const { password: _password, ...retUser } = foundUser;
     return retUser;
   }
 
   async registerUser(user: RegisterUserDto): Promise<Omit<User, 'password'>> {
-    const existingUser = this.users.find((u) => u.email === user.email);
+    const existingUser = await this.prisma.user.findUnique({
+      where: {
+        email: user.email,
+      },
+    });
+
     if (existingUser) {
       throw new BadRequestException('User email must be unique');
     }
+
     if (user.password !== user.confirmationPassword) {
       throw new BadRequestException(
         'Password and Confirmation Password must match',
       );
     }
+
     const { confirmationPassword: _, ...newUser } = user;
-    this.users.push({
-      ...newUser,
-      password: await hash(user.password, 12),
-      id: uuidv4(),
+    const hashedPassword = await hash(user.password, 12);
+
+    const userRegistration = this.prisma.user.create({
+      data: {
+        ...newUser,
+        password: hashedPassword,
+        id: uuidv4(),
+      },
     });
-    return {
-      id: user.id,
-      username: user.username,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      email: user.email,
-      role: user.role,
-    };
+    return userRegistration;
   }
 
-  findById(id: string): Omit<User, 'password'> {
-    const { password: _, ...user } = this.users.find((u) => u.id === id);
+  async findById(id: string): Promise<Omit<User, 'password'>> {
+    // const { password: _, ...user } = this.users.find((u) => u.id === id);
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
     if (!user) {
       throw new BadRequestException(`No user found with id ${id}`);
     }

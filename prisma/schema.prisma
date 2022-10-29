@@ -58,16 +58,14 @@ enum Role {
 
 model User {
   id              String    @id @unique @default(uuid())
-  provider_id     String    @unique
-  hashed_password String?
+  providerId     String?    @unique
+  password        String?
   username        String    @unique
   email           String    @unique
-  first_name      String?
-  last_name       String?
+  firstName      String?
+  lastName       String?
   phone           String?
   role            Role      @default(STANDARD)
-
-  @@map("user")
 }
 
 model ProductCategory {
