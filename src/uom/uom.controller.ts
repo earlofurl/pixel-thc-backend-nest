@@ -9,12 +9,15 @@ import {
   UseInterceptors,
   CacheInterceptor,
   CacheTTL,
+  UseGuards,
 } from '@nestjs/common';
 import type { Uom } from '@prisma/client';
+import { LoggedInGuard } from '../guards/logged-in.guard';
 import { UomService } from './uom.service';
 import { CreateUomDto } from './dto/create-uom.dto';
 import { UpdateUomDto } from './dto/update-uom.dto';
 
+@UseGuards(LoggedInGuard)
 @Controller('uom')
 export class UomController {
   constructor(private readonly uomService: UomService) {}

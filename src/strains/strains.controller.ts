@@ -6,12 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import type { Strain } from '@prisma/client';
+import { LoggedInGuard } from '../guards/logged-in.guard';
 import { StrainsService } from './strains.service';
 import { CreateStrainDto } from './dto/create-strain.dto';
 import { UpdateStrainDto } from './dto/update-strain.dto';
 
+@UseGuards(LoggedInGuard)
 @Controller('strains')
 export class StrainsController {
   constructor(private readonly strainsService: StrainsService) {}

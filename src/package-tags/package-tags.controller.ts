@@ -6,12 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import type { PackageTag } from '@prisma/client';
+import { LoggedInGuard } from '../guards/logged-in.guard';
 import { PackageTagsService } from './package-tags.service';
 import { CreatePackageTagDto } from './dto/create-package-tag.dto';
 import { UpdatePackageTagDto } from './dto/update-package-tag.dto';
 
+@UseGuards(LoggedInGuard)
 @Controller('package-tags')
 export class PackageTagsController {
   constructor(private readonly packageTagsService: PackageTagsService) {}

@@ -9,13 +9,16 @@ import {
   Delete,
   UseInterceptors,
   CacheTTL,
+  UseGuards,
 } from '@nestjs/common';
 import type { Package } from '@prisma/client';
+import { LoggedInGuard } from '../guards/logged-in.guard';
 import { PackagesService } from './packages.service';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackagesDto } from './dto/update-packages.dto';
 import { AssignTagDto } from './dto/assign-tag.dto';
 
+@UseGuards(LoggedInGuard)
 @Controller('packages')
 export class PackagesController {
   constructor(private readonly packagesService: PackagesService) {}

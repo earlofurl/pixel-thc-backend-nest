@@ -6,12 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import type { ItemType } from '@prisma/client';
+import { LoggedInGuard } from '../guards/logged-in.guard';
 import { ItemTypesService } from './item-types.service';
 import { CreateItemTypeDto } from './dto/create-item-type.dto';
 import { UpdateItemTypeDto } from './dto/update-item-type.dto';
 
+@UseGuards(LoggedInGuard)
 @Controller('item-types')
 export class ItemTypesController {
   constructor(private readonly itemTypesService: ItemTypesService) {}

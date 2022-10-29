@@ -6,12 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import type { LabTest } from '@prisma/client';
+import { LoggedInGuard } from '../guards/logged-in.guard';
 import { LabTestsService } from './lab-tests.service';
 import { CreateLabTestDto } from './dto/create-lab-test.dto';
 import { UpdateLabTestDto } from './dto/update-lab-test.dto';
 
+@UseGuards(LoggedInGuard)
 @Controller('lab-tests')
 export class LabTestsController {
   constructor(private readonly labTestsService: LabTestsService) {}

@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { AdminGuard } from './admin.guard';
+import { AdminGuard } from './guards/admin.guard';
 import { AppService } from './app.service';
-import { LoggedInGuard } from './logged-in.guard';
+import { LoggedInGuard } from './guards/logged-in.guard';
 
 @Controller()
 export class AppController {
