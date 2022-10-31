@@ -15,6 +15,7 @@ const redisPort = process.env.REDIS_PORT;
 // }
 
 const redisUrl = `redis://${redisUser}:${redisPass}@${redisHost}:${redisPort}`;
+// const redisUrl = `redis://${redisHost}:${redisPort}`;
 
 @Module({
   providers: [
