@@ -35,7 +35,6 @@ services:
   redis:
     container_name: cache
     image: redis
-    command: redis-server --requirepass redis123
     expose:
       - 6379
     ports:

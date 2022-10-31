@@ -34,7 +34,7 @@ export class PackagesController {
   }
 
   @UseInterceptors(CacheInterceptor)
-  @CacheTTL(30)
+  @CacheTTL(10)
   @Get()
   findAll(): Promise<Package[]> {
     if (process.env.NODE_ENV === 'development') {
