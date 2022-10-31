@@ -16,6 +16,8 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 
+// TODO: Make sure that sessions are invalidated properly when expired
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
