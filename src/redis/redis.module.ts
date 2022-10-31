@@ -3,10 +3,15 @@ import * as Redis from 'redis';
 
 import { REDIS } from './redis.constants';
 const redisUser = process.env.REDIS_USER;
-const redisPass = process.env.REDIS_PASSWORD;
+const redisPass = process.env.REDIS_PASSPHRASE;
 const redisHost = process.env.REDIS_HOST;
 const redisPort = process.env.REDIS_PORT;
-const redisUrl = `redis://${redisHost}:${redisPort}`;
+let redisUrl = '';
+if (process.env.NODE_ENV === 'production') {
+  redisUrl = `redis://${redisUser}:${redisPass}@${redisHost}:${redisPort}`;
+} else {
+  redisUrl = `redis://${redisHost}:${redisPort}`;
+}
 
 @Module({
   providers: [
