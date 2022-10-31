@@ -1,12 +1,9 @@
-import type { User as PrismaUser } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import {
   BadRequestException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { compare, hash } from 'bcrypt';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -17,29 +14,6 @@ import { User } from './models/user.interface';
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService) {}
-
-  // private users: User[] = [
-  //   {
-  //     id: uuidv4(),
-  //     username: 'testDude420',
-  //     firstName: 'Joe',
-  //     lastName: 'Foo',
-  //     email: 'joefoo@test.com',
-  //     // Passw0rd!
-  //     password: '$2b$12$s50omJrK/N3yCM6ynZYmNeen9WERDIVTncywePc75.Ul8.9PUk0LK',
-  //     role: 'ADMIN',
-  //   },
-  //   {
-  //     id: uuidv4(),
-  //     username: 'testGrl69',
-  //     firstName: 'Jen',
-  //     lastName: 'Bar',
-  //     email: 'jenbar@test.com',
-  //     // P4ssword!
-  //     password: '$2b$12$FHUV7sHexgNoBbP8HsD4Su/CeiWbuX/JCo8l2nlY1yCo2LcR3SjmC',
-  //     role: 'STANDARD',
-  //   },
-  // ];
 
   async validateUser(
     user: LoginUserDto,

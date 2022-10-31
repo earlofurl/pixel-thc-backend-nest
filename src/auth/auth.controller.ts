@@ -36,10 +36,10 @@ export class AuthController {
   //   return this.authService.findAll();
   // }
   //
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.authService.findOne(+id);
-  // }
+  @Get('user/:id')
+  findOne(@Param('id') id: string) {
+    return this.authService.findById(id);
+  }
   //
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
