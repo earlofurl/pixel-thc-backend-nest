@@ -11,6 +11,11 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { User } from './models/user.interface';
 
+type SignupResponse = {
+  success: boolean;
+  message: string;
+};
+
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService) {}
@@ -62,6 +67,7 @@ export class AuthService {
         id: uuidv4(),
       },
     });
+    // return { success: true, message: 'User registered successfully' };
     return userRegistration;
   }
 
