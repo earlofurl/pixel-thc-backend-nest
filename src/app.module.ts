@@ -84,7 +84,7 @@ export class AppModule implements NestModule {
             logErrors: true,
           }),
           saveUninitialized: false,
-          secret: 'sup3rs3cr3td4nk4208008zz222257921',
+          secret: 'TheMost69Secret420String8008Ever5483713571',
           resave: false,
           cookie: {
             sameSite: true,

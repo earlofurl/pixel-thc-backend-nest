@@ -7,9 +7,11 @@ import { Logger } from '@nestjs/common';
 declare const module: any;
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const logger = app.get(Logger);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger: ['error', 'warn', 'debug', 'log', 'verbose'],
+  });
 
+  const logger = app.get(Logger);
   // const CORS_OPTIONS = {
   //   origin: ['0.0.0.0:3069'], // '*' or '0.0.0.0:3069' or other depending on server
   //   allowedHeaders: [

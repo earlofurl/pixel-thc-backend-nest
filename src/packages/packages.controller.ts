@@ -37,6 +37,7 @@ export class PackagesController {
   @CacheTTL(5)
   @Get()
   findAll(): Promise<Package[]> {
+    console.log('GET findAll packages');
     if (process.env.NODE_ENV === 'development') {
       console.log('GET findAll packages');
     }
