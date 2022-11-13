@@ -165,6 +165,47 @@ export class PackagesService {
     });
   }
 
+  findByOrderId(id: string) {
+    // `This action returns all packages with associated data`;
+    return this.prisma.package.findMany({
+      where: { orderId: id },
+      include: {
+        tag: true,
+        uom: true,
+        item: {
+          include: {
+            itemType: {
+              include: {
+                uomDefault: {},
+              },
+            },
+            strain: true,
+          },
+        },
+        labTests: {
+          include: {
+            labTest: {
+              select: {
+                thcTotalPercent: true,
+                cbdPercent: true,
+                terpenePercent: true,
+                overallPassed: true,
+                totalCannabinoidsPercent: true,
+                batchCode: true,
+                testIdCode: true,
+              },
+            },
+          },
+        },
+        sourcePackages: {
+          include: {
+            tag: true,
+          },
+        },
+      },
+    });
+  }
+
   async findOne(tagNumber: string) {
     // `This action returns the package with specified tag number`;
     const tag = await this.prisma.packageTag.findUnique({

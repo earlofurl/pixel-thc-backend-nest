@@ -52,6 +52,14 @@ export class PackagesController {
     return this.packagesService.findOne(tagNumber);
   }
 
+  @Get('/order/:orderId')
+  findByOrderId(@Param('orderId') orderId: string) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('GET findByOrderId orderId package');
+    }
+    return this.packagesService.findByOrderId(orderId);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePackageDto: UpdatePackagesDto) {
     return this.packagesService.update(+id, updatePackageDto);

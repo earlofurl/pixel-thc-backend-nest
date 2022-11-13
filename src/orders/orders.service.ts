@@ -3,6 +3,7 @@ import { Cache } from 'cache-manager';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PrismaService } from 'nestjs-prisma';
+import { Order } from '@prisma/client';
 
 @Injectable()
 export class OrdersService {
@@ -54,14 +55,13 @@ export class OrdersService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<Order> {
     // `This action returns a #${id} order`;
-    const cachedData = await this.cacheService.get<{ customerName: string }>(
-      id,
-    );
+    const cachedData = await this.cacheService.get<Order>(id);
     if (cachedData) {
       console.log(`Getting data from cache!`);
-      return `${cachedData.customerName}`;
+      console.log(cachedData);
+      return cachedData;
     }
 
     // if not, call API and set the cache:
@@ -69,7 +69,8 @@ export class OrdersService {
       where: { id: id },
     });
     await this.cacheService.set(id.toString(), data);
-    return `${data.customerName}`;
+    console.log(data);
+    return data;
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
