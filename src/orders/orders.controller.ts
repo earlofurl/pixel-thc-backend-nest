@@ -7,6 +7,9 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  CacheInterceptor,
+  CacheTTL,
 } from '@nestjs/common';
 import type { Order } from '@prisma/client';
 import { LoggedInGuard } from '../guards/logged-in.guard';
@@ -30,6 +33,16 @@ export class OrdersController {
       console.log('GET findAll orders');
     }
     return this.ordersService.findAll();
+  }
+
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(5)
+  @Get('/open')
+  findOpen() {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('GET findAll open orders');
+    }
+    return this.ordersService.findAllOpen();
   }
 
   @Get(':id')

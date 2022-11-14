@@ -55,6 +55,57 @@ export class OrdersService {
     });
   }
 
+  async findAllOpen() {
+    // `This action returns all open orders`;
+    const cachedData = await this.cacheService.get<Order>('openOrders');
+    if (cachedData) {
+      console.log(`Getting data from cache!`);
+      console.log(cachedData);
+      return cachedData;
+    }
+
+    // if not, call API and set the cache:
+    const data = await this.prisma.order.findMany({
+      where: { status: 'Open' },
+      include: {
+        lineItemPackages: {
+          include: {
+            tag: true,
+            uom: true,
+            item: {
+              include: {
+                itemType: {
+                  include: {
+                    uomDefault: {},
+                  },
+                },
+                strain: true,
+              },
+            },
+            labTests: {
+              include: {
+                labTest: {
+                  select: {
+                    thcTotalPercent: true,
+                    cbdPercent: true,
+                    terpenePercent: true,
+                    overallPassed: true,
+                    totalCannabinoidsPercent: true,
+                    batchCode: true,
+                    testIdCode: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    await this.cacheService.set('openOrders', data);
+    console.log(data);
+    return data;
+  }
+
   async findOne(id: string): Promise<Order> {
     // `This action returns a #${id} order`;
     const cachedData = await this.cacheService.get<Order>(id);

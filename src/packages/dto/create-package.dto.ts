@@ -18,4 +18,6 @@ export class CreatePackageDto {
   newParentQuantity: number;
 
   notes: string;
+
+  orderId?: string;
 }

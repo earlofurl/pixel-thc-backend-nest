@@ -41,6 +41,7 @@ export class PackagesService {
       itemId,
       quantity,
       uomId,
+      orderId,
       newParentQuantity,
       notes,
     } = createPackageDto;
@@ -66,6 +67,11 @@ export class PackagesService {
         sourcePackages: {
           connect: {
             id: sourcePackageId,
+          },
+        },
+        order: {
+          connect: {
+            id: orderId,
           },
         },
         labTests: {
