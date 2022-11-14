@@ -42,6 +42,7 @@ export class PackagesService {
       quantity,
       uomId,
       orderId,
+      pricePerUnit,
       newParentQuantity,
       notes,
     } = createPackageDto;
@@ -74,6 +75,8 @@ export class PackagesService {
             id: orderId,
           },
         },
+        ppuDefault: pricePerUnit,
+        ppuOnOrder: pricePerUnit,
         labTests: {
           create: [
             {
@@ -131,44 +134,85 @@ export class PackagesService {
     await this.prisma.$transaction([updateTagStatus, updateTagOnPackage]);
   }
 
-  findAll() {
+  findAll({ availableOnly }: { availableOnly?: boolean }) {
     // `This action returns all packages with associated data`;
-    return this.prisma.package.findMany({
-      include: {
-        tag: true,
-        uom: true,
-        item: {
-          include: {
-            itemType: {
-              include: {
-                uomDefault: {},
+
+    if (availableOnly) {
+      return this.prisma.package.findMany({
+        where: { isLineItem: false },
+        include: {
+          tag: true,
+          uom: true,
+          item: {
+            include: {
+              itemType: {
+                include: {
+                  uomDefault: {},
+                },
               },
-            },
-            strain: true,
-          },
-        },
-        labTests: {
-          include: {
-            labTest: {
-              select: {
-                thcTotalPercent: true,
-                cbdPercent: true,
-                terpenePercent: true,
-                overallPassed: true,
-                totalCannabinoidsPercent: true,
-                batchCode: true,
-                testIdCode: true,
-              },
+              strain: true,
             },
           },
-        },
-        sourcePackages: {
-          include: {
-            tag: true,
+          labTests: {
+            include: {
+              labTest: {
+                select: {
+                  thcTotalPercent: true,
+                  cbdPercent: true,
+                  terpenePercent: true,
+                  overallPassed: true,
+                  totalCannabinoidsPercent: true,
+                  batchCode: true,
+                  testIdCode: true,
+                },
+              },
+            },
+          },
+          sourcePackages: {
+            include: {
+              tag: true,
+            },
           },
         },
-      },
-    });
+      });
+    } else {
+      return this.prisma.package.findMany({
+        include: {
+          tag: true,
+          uom: true,
+          item: {
+            include: {
+              itemType: {
+                include: {
+                  uomDefault: {},
+                },
+              },
+              strain: true,
+            },
+          },
+          labTests: {
+            include: {
+              labTest: {
+                select: {
+                  thcTotalPercent: true,
+                  cbdPercent: true,
+                  terpenePercent: true,
+                  overallPassed: true,
+                  totalCannabinoidsPercent: true,
+                  batchCode: true,
+                  testIdCode: true,
+                },
+              },
+            },
+          },
+          sourcePackages: {
+            include: {
+              tag: true,
+            },
+          },
+        },
+      });
+    }
   }
 
   findByOrderId(id: string) {

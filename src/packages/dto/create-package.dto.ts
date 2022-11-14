@@ -19,5 +19,8 @@ export class CreatePackageDto {
 
   notes: string;
 
-  orderId?: string;
+  @Type(() => Number)
+  pricePerUnit?: number;
+
+  orderId?: string | null;
 }

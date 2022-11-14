@@ -25,6 +25,7 @@ export class PackagesController {
 
   @Post()
   create(@Body() createPackageDto: CreatePackageDto) {
+    console.log('POST create package', createPackageDto);
     return this.packagesService.create(createPackageDto);
   }
 
@@ -41,7 +42,17 @@ export class PackagesController {
     if (process.env.NODE_ENV === 'development') {
       console.log('GET findAll packages');
     }
-    return this.packagesService.findAll();
+    return this.packagesService.findAll({ availableOnly: null });
+  }
+
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(5)
+  @Get('/available')
+  findAllAvailable(): Promise<Package[]> {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('GET findAll available packages');
+    }
+    return this.packagesService.findAll({ availableOnly: false });
   }
 
   @Get(':tagNumber')
