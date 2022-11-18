@@ -6,15 +6,15 @@ const redisUser = process.env.REDIS_USER;
 const redisPass = process.env.REDIS_PASSPHRASE;
 const redisHost = process.env.REDIS_HOST;
 const redisPort = process.env.REDIS_PORT;
-//
-// let redisUrl = '';
-// if (process.env.NODE_ENV === 'production') {
-//   redisUrl = `redis://${redisUser}:${redisPass}@${redisHost}:${redisPort}`;
-// } else {
-//   redisUrl = `redis://${redisHost}:${redisPort}`;
-// }
 
-const redisUrl = `redis://${redisUser}:${redisPass}@${redisHost}:${redisPort}`;
+let redisUrl = '';
+if (process.env.NODE_ENV === 'production') {
+  redisUrl = `redis://${redisPass}@${redisHost}:${redisPort}`;
+} else {
+  redisUrl = `redis://${redisUser}:${redisPass}@${redisHost}:${redisPort}`;
+}
+
+// const redisUrl = `redis://${redisUser}:${redisPass}@${redisHost}:${redisPort}`;
 // const redisUrl = `redis://${redisHost}:${redisPort}`;
 
 @Module({
