@@ -63,7 +63,7 @@ type RedisClient = ReturnType<typeof redisClient>;
           socket: {
             host: process.env.REDIS_HOST,
             port: parseInt(process.env.REDIS_PORT),
-            passphrase: process.env.REDIS_PASSWORD,
+            passphrase: process.env.REDIS_PASSPHRASE,
           },
         }),
     }),
