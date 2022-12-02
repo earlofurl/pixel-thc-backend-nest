@@ -25,6 +25,8 @@ const redisUrl = `redis://${redisUser}:${redisPass}@${redisHost}:${redisPort}`;
       useFactory: async () => {
         const client = Redis.createClient({
           url: redisUrl,
+          username: 'default',
+          password: process.env.REDIS_PASSPHRASE,
           legacyMode: true,
         });
         await client.connect();

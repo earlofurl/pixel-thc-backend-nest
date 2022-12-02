@@ -59,6 +59,8 @@ type RedisClient = ReturnType<typeof redisClient>;
       // @ts-ignore
       store: async () =>
         await redisStore({
+          username: process.env.REDIS_USER,
+          password: process.env.REDIS_PASSPHRASE,
           // Store-specific configuration:
           socket: {
             host: process.env.REDIS_HOST,
